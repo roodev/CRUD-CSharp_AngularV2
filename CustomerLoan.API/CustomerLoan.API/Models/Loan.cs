@@ -8,7 +8,6 @@ namespace CustomerLoan.API.Models
         public DateTime LoanDate { get; set; }
         public string Currency { get; set; }
         public decimal Amount { get; set; }
-        public decimal ConversionRate { get; set; }
         public DateTime DueDate { get; set; }
         public decimal TotalAmount { get; set; } 
         public int MonthsToDueDate { get; set; }
@@ -22,12 +21,11 @@ namespace CustomerLoan.API.Models
             LoanDate = DateTime.Now;
         }
 
-        public Loan(DateTime loanDate, string currency, decimal amount, decimal conversionRate, DateTime dueDate, decimal totalAmount, int monthsToDueDate, int customerId)
+        public Loan(DateTime loanDate, string currency, decimal amount, DateTime dueDate, decimal totalAmount, int monthsToDueDate, int customerId)
         {
             LoanDate = loanDate;
             Currency = currency;
             Amount = amount;
-            ConversionRate = conversionRate;
             DueDate = dueDate;
             TotalAmount = totalAmount;
             MonthsToDueDate = monthsToDueDate;

@@ -59,7 +59,6 @@ namespace CustomerLoan.API.Repository
             loan.LoanDate = entity.LoanDate;
             loan.Currency = entity.Currency;
             loan.Amount = entity.Amount;
-            loan.ConversionRate = entity.ConversionRate;
             loan.DueDate = entity.DueDate;
             loan.TotalAmount = entity.TotalAmount;
             loan.MonthsToDueDate = entity.MonthsToDueDate;

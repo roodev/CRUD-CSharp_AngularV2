@@ -6,7 +6,6 @@ namespace CustomerLoan.API.Models.DTO
     {
         public string Currency { get; set; }
         public decimal Amount { get; set; }
-        public decimal ConversionRate { get; set; }
         public DateTime DueDate { get; set; }
         public decimal TotalAmount { get; set; }
         public int MonthsToDueDate { get; set; }

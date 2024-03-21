@@ -40,7 +40,6 @@
                 loan.LoanDate = DateTime.UtcNow;
                 loan.Currency = loansDTO.Currency;
                 loan.Amount = loansDTO.Amount;
-                loan.ConversionRate = loansDTO.ConversionRate;
                 loan.DueDate = loansDTO.DueDate;
                 loan.TotalAmount = loansDTO.TotalAmount;
                 loan.MonthsToDueDate = loansDTO.MonthsToDueDate;

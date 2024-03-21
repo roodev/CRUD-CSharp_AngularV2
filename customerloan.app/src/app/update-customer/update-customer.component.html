@@ -1,0 +1,22 @@
+<div class="content-wrapper">
+  <div class="mat-elevation-z1">
+    <h2 class="text-center mt-4 mb-4">Atualização de Cliente</h2>
+
+    <div class="mat-elevation-z8 mt-4 p-4">
+      <form [formGroup]="customerForm" (ngSubmit)="onSubmit()">
+        <mat-form-field class="w-100">
+          <input matInput placeholder="Nome" formControlName="name">
+          <mat-error *ngIf="customerForm.get('name')?.hasError('required')">Nome é obrigatório</mat-error>
+          <mat-error *ngIf="customerForm.get('name')?.hasError('minlength')">Nome deve ter pelo menos 4 caracteres</mat-error>
+        </mat-form-field>
+        <mat-form-field class="w-100">
+          <input matInput placeholder="CPF" formControlName="cpf" readonly>
+        </mat-form-field>
+        <div class="text-end">
+          <button mat-raised-button color="warn" type="button" title="Voltar" style="margin-right: 10px;" routerLink="">Voltar</button>
+          <button mat-raised-button color="primary" type="submit" title="Atualizar Cliente">Atualizar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
