@@ -17,13 +17,20 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { CustomersListComponent } from './customers-list/customers-list.component';
 import { RegisterCustomerComponent } from './register-customer/register-customer.component';
 import { UpdateCustomerComponent } from './update-customer/update-customer.component';
+import { LoanSimulationComponent } from './loan-simulation/loan-simulation.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+
+
 
 @NgModule({
   declarations: [
     AppComponent,
     CustomersListComponent,
     RegisterCustomerComponent,
-    UpdateCustomerComponent
+    UpdateCustomerComponent,
+    LoanSimulationComponent
   ],
   imports: [
     BrowserModule,
@@ -38,9 +45,10 @@ import { UpdateCustomerComponent } from './update-customer/update-customer.compo
     MatIconModule,
     MatTableModule,
     BrowserAnimationsModule,
-    MatSnackBarModule
-    
-
+    MatSnackBarModule,
+    MatSelectModule ,
+    MatDatepickerModule, 
+    MatMomentDateModule,
   ],
   providers: [
     provideClientHydration(),

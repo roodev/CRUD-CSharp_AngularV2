@@ -10,9 +10,9 @@ import { Router } from '@angular/router';
 export class CustomersListComponent implements OnInit {
 
   customers: any[] = [];
-  editingCustomer: any = null; // Variável para armazenar o cliente em edição
+  editingCustomer: any = null;
 
-  // Defina a propriedade displayedColumns como um array de strings
+  
   displayedColumns: string[] = ['name', 'cpf', 'actions'];
 
   constructor(private customerService: CustomerloanService, private router: Router) { }
@@ -41,6 +41,6 @@ export class CustomersListComponent implements OnInit {
   }
 
   simulateLoan(customerId: number): void {
-    this.router.navigate(['/customer-loan-simulation', customerId]);
+    this.router.navigate(['/loan-simulation', customerId]);
   }
 }
