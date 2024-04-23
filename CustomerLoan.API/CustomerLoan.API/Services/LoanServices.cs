@@ -21,14 +21,14 @@ namespace CustomerLoan.API.Services
 
         public bool Add(Loan register)
         {
-            if (register == null) throw new ArgumentNullException(nameof(register), "Registro nulo");
+            if (register == null) throw new ArgumentNullException(nameof(register), "Registro nulo.");
             loanRepository.AddLoan(register);
             return loanRepository.SaveChanges();
         }
 
         public bool Delete(int id)
         {
-            if (id == 0 || id == null) throw new ArgumentNullException("Id não válido");
+            if (id == 0 || id == null) throw new ArgumentNullException("Id não válido.");
             loanRepository.DeleteLoan(id);
             return loanRepository.SaveChanges();
         }
@@ -40,15 +40,15 @@ namespace CustomerLoan.API.Services
 
         public bool Update(Loan register)
         {
-            if (register == null) throw new ArgumentNullException("Registro nulo");
-            if (register.Id == 0 || register.Id == null) throw new ArgumentNullException("Id não válido");
+            if (register == null) throw new ArgumentNullException("Registro nulo.");
+            if (register.Id == 0 || register.Id == null) throw new ArgumentNullException("Id não válido.");
             loanRepository.UpdateLoan(register);
             return loanRepository.SaveChanges();
         }
 
         public Loan GetLoanById(int id)
         {
-            if (id == 0) throw new ArgumentException("Id não válido", nameof(id));
+            if (id == 0) throw new ArgumentException("Id não válido.", nameof(id));
             return loanRepository.GetLoanById(id);
         }
 
@@ -61,18 +61,30 @@ namespace CustomerLoan.API.Services
 
         public async Task<decimal> GetDollarValueAsync(DateTime date)
         {
-            DollarValueDTO dollarValue = await dollarValueRepository.GetDollarValueAsync(date);
+            DateTime nowLocal = DateTime.Now;
+            decimal dollartoday;
 
-            decimal dollartoday = dollarValue.CotacaoVenda;
+
+            if (nowLocal.Hour < 16)
+            {
+                DateTime yesterday = nowLocal.AddDays(-1).Date;
+                DollarValueDTO dollarValue = await dollarValueRepository.GetDollarValueAsync(yesterday);
+                dollartoday = dollarValue.CotacaoVenda;
+            }
+            else
+            {
+                DollarValueDTO dollarValue = await dollarValueRepository.GetDollarValueAsync(date);
+                dollartoday = dollarValue.CotacaoVenda;
+            }
 
             return dollartoday;
         }
 
-        public async Task<decimal> ConvertCurrencyAsync(string selectedCurrencyType, decimal loanAmount, DateTime loanDate)
+        public async Task<decimal> ConvertCurrencyAsync(string selectedCurrencyType, string selectedCurrencySymbol,  decimal loanAmount, DateTime loanDate)
         {
             decimal dollarValue = await GetDollarValueAsync(loanDate);
 
-            var currencyExchange = await currencyExchangeRepository.GetCurrencyExchangeAsync(selectedCurrencyType, loanDate);
+            var currencyExchange = await currencyExchangeRepository.GetCurrencyExchangeAsync(selectedCurrencySymbol, loanDate);
 
             decimal convertedAmount;
 
@@ -94,19 +106,21 @@ namespace CustomerLoan.API.Services
             return convertedAmount;
         }
 
-        public async Task<decimal> CalculateTotalLoanAmountAsync(string selectedCurrencyType, decimal loanAmount, DateTime loanDate, DateTime endDate, decimal interestRate)
+        public async Task<decimal> CalculateTotalLoanAmountAsync(string selectedCurrencyType, string selectedCurrencySymbol,  decimal loanAmount, DateTime loanDate, DateTime endDate, decimal interestRate)
         {
             if (selectedCurrencyType == "BRL")
             {
                 int totalMonths = CalculateTotalMonths(loanDate, endDate);
                 decimal totalLoanAmount = loanAmount * (decimal)Math.Pow((double)(1 + interestRate), totalMonths);
+                totalLoanAmount = Math.Round(totalLoanAmount, 2);
                 return totalLoanAmount;
             }
             else
             {
-                decimal convertedLoanAmount = await ConvertCurrencyAsync(selectedCurrencyType, loanAmount, loanDate);
+                decimal convertedLoanAmount = await ConvertCurrencyAsync(selectedCurrencyType, selectedCurrencySymbol, loanAmount, loanDate);
                 int totalMonths = CalculateTotalMonths(loanDate, endDate);
                 decimal totalLoanAmount = convertedLoanAmount * (decimal)Math.Pow((double)(1 + interestRate), totalMonths);
+                totalLoanAmount = Math.Round(totalLoanAmount, 2);
                 return totalLoanAmount;
             }
         }

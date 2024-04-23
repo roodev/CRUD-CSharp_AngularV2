@@ -1,42 +1,40 @@
 <div class="content-wrapper">
   <div class="mat-elevation-z1">
     <h2 class="text-center mt-4 mb-4">Simulação de Empréstimo</h2>
-
     <div class="mat-elevation-z8 mt-4 p-4">
       <form [formGroup]="loanForm" (ngSubmit)="submitLoan()">
         <mat-form-field class="w-100">
+          <mat-label>Valor emprestado</mat-label>
           <input matInput placeholder="Valor Empréstimo" formControlName="loanAmount">
           <mat-error *ngIf="loanForm.get('loanAmount')?.hasError('required')">Valor do empréstimo é obrigatório</mat-error>
         </mat-form-field>
-
         <mat-form-field class="w-100">
           <mat-label>Moeda</mat-label>
-          <mat-select formControlName="currency">
+          <mat-select formControlName="currency" (selectionChange)="onCurrencySelectionChange($event)">
             <ng-container *ngIf="currencies && currencies.length">
-              <mat-option *ngFor="let currency of currencies" [value]="currency.simbolo">{{ currency.simbolo }}</mat-option>
+              <mat-option *ngFor="let currency of currencies" [value]="currency" [attr.tipoMoeda]="currency.tipoMoeda">
+                {{ currency.simbolo }}
+              </mat-option>
             </ng-container>
           </mat-select>
-        </mat-form-field> 
-
+        </mat-form-field>
         <mat-form-field class="w-100">
-          <input matInput [matDatepicker]="picker" placeholder="Data Vencimento" formControlName="dueDate">
+          <input matInput [matDatepicker]="picker" placeholder="Data Vencimento" formControlName="dueDate" (ngModelChange)="onDateChange($event)">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
+          <mat-datepicker #picker (dateChange)="onDateChange($event)"></mat-datepicker>
           <mat-error *ngIf="loanForm.get('dueDate')?.hasError('required')">Data de vencimento é obrigatória</mat-error>
         </mat-form-field>
-
         <mat-form-field class="w-100">
+          <mat-label>Prazo em meses</mat-label>
           <input matInput placeholder="Prazo em Meses" formControlName="monthsToDueDate" readonly>
         </mat-form-field>
-
         <mat-form-field class="w-100">
-          <input matInput placeholder="Valor total" formControlName="totalAmount" readonly>
+          <mat-label>Valor total</mat-label>
+          <input matInput placeholder="Valor total" formControlName="totalAmount" readonly [value]="getFormattedTotalAmount()">
         </mat-form-field>
-
         <div class="text-end">
           <button mat-raised-button color="warn" type="button" title="Voltar" routerLink="">Voltar</button>
           <button mat-raised-button color="basic" type="button" title="Limpar Campos" style="margin-left: 10px;" (click)="resetForm()">Limpar Campos</button>
-          <button mat-raised-button color="accent" type="button" (click)="simulateLoan()" style="margin-left: 10px;">Simular Empréstimo</button>
           <button mat-raised-button color="primary" type="submit" title="Salvar Empréstimo" style="margin-left: 10px;">Salvar Empréstimo</button>
         </div>
       </form>

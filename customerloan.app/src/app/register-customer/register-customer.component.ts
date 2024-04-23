@@ -13,10 +13,10 @@ import { Router } from '@angular/router';
 export class RegisterCustomerComponent {
   customerForm: FormGroup;
   successMessage: string = '';
-  errorMessage: string= ''; 
+  errorMessage: string = '';
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private customerService: CustomerloanService,
     private snackBar: MatSnackBar,
     private router: Router,
@@ -37,7 +37,7 @@ export class RegisterCustomerComponent {
           this.router.navigate(['/']);
         },
         error => {
-          this.errorMessage= 'Houve um erro ao processo o cadastro de Cliente';
+          this.errorMessage = 'Houve um erro ao processo o cadastro de Cliente.';
           this.openErrorSnackBar(this.errorMessage);
         }
       );
@@ -49,22 +49,21 @@ export class RegisterCustomerComponent {
   }
 
   validateCpf(control: any) {
-    if (control && control.value) { 
+    if (control && control.value) {
       let cpf = control.value.replace(/\D/g, '');
-    
-      
+
+
       if (cpf.length > 11) {
         cpf = cpf.substr(0, 11);
         control.setValue(cpf);
-        console.log(cpf)
       }
-    
-    
+
+
       if (cpf.length !== 11) {
         return { invalidCpf: true };
       }
     }
-  
+
     return null;
   }
 
@@ -72,19 +71,19 @@ export class RegisterCustomerComponent {
     this.snackBar.open(message, 'Fechar', {
       duration: 3000,
       horizontalPosition: 'end',
-      verticalPosition: 'top' 
+      verticalPosition: 'top'
     });
   }
 
   openErrorSnackBar(error: any) {
     let errorMessage = 'CPF já cadastrado!';
-  
+
     if (error instanceof HttpErrorResponse) {
       if (error.status === 400 && error.error && error.error.message) {
         errorMessage = error.error.message;
       }
     }
-  
+
     this.snackBar.open(errorMessage, 'Fechar', {
       duration: 3000,
       horizontalPosition: 'start',

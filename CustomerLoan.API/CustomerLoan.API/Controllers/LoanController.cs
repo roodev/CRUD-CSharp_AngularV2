@@ -33,8 +33,41 @@
                 return Ok(loanService);
             }
 
-            [HttpPost]
-            public IActionResult AddLoan([FromBody] CreateLoansDTO loansDTO)
+        [HttpPost("calculate")]
+        public async Task<IActionResult> CalculateLoan([FromBody] CalculateLoanDTO calculateLoanDTO)
+        {
+            if (calculateLoanDTO == null || string.IsNullOrEmpty(calculateLoanDTO.CurrencyType) || calculateLoanDTO.LoanAmount <= 0 || calculateLoanDTO.DueDate == default)
+            {
+                return BadRequest("Dados inválidos.");
+            }
+
+            try
+            {
+                int totalMonths = _service.CalculateTotalMonths(DateTime.UtcNow, calculateLoanDTO.DueDate);
+                decimal dollarValue = await _service.GetDollarValueAsync(DateTime.UtcNow);
+                if (calculateLoanDTO.CurrencyType != "BRL") { decimal convertedAmount = await _service.ConvertCurrencyAsync(calculateLoanDTO.CurrencyType, calculateLoanDTO.CurrencySymbol, calculateLoanDTO.LoanAmount, DateTime.UtcNow); }
+                decimal totalLoanAmount = await _service.CalculateTotalLoanAmountAsync(calculateLoanDTO.CurrencyType,calculateLoanDTO.CurrencySymbol, calculateLoanDTO.LoanAmount, DateTime.UtcNow, calculateLoanDTO.DueDate, 0.05m);
+
+             
+                Loan loan = new Loan
+                {
+                    Amount = calculateLoanDTO.LoanAmount,
+                    Currency = calculateLoanDTO.CurrencySymbol,
+                    DueDate = calculateLoanDTO.DueDate,
+                    TotalAmount = totalLoanAmount, 
+                    MonthsToDueDate = totalMonths 
+                };
+
+                return Ok(loan);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao calcular o empréstimo: {ex.Message}");
+            }
+        }
+
+        [HttpPost("createloan")]
+        public IActionResult AddLoan([FromBody] CreateLoansDTO loansDTO)
             {
                 Loan loan = new Loan();
                 loan.LoanDate = DateTime.UtcNow;
@@ -47,8 +80,8 @@
                 return Ok(_service.Add(loan));
             }
 
-            [HttpDelete("{id}")]
-            public IActionResult DeleteLoan(int id)
+        [HttpDelete("{id}")]
+        public IActionResult DeleteLoan(int id)
             {
                 return Ok(_service.Delete(id));
             }
